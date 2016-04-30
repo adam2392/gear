@@ -23,10 +23,37 @@ void ControlComputer::readSerial(char *outCommands) {
   }
 }
 
+void ControlComputer::printFront() {
+  Serial.println(front_command);
+}
+
+void ControlComputer::printRight() {
+  Serial.println(right_command);
+}
+void ControlComputer::printLeft() {
+  Serial.println(left_command);
+}
+void ControlComputer::printBack() {
+  Serial.println(back_command);
+}
+void ControlComputer::printCrouch() {
+  Serial.println(crouch_command);
+}
+void ControlComputer::printReload() {
+  Serial.println(reload_command);
+}
+
+void ControlComputer::printAim() {
+  Serial.println(aim_command);
+}
+void ControlComputer::printJump() {
+  Serial.println(jump_command);
+}
 
 void ControlComputer::signalFront() {
 //  Keyboard.press('w');
   pressCommand(&front_command);
+  // Serial.println('This is the front command: ');
   // Serial.println("w");
   // Serial.println("new command down");
   // Serial.println(front_command);
@@ -159,14 +186,14 @@ void ControlComputer::setCommands(int index, char* comm) {
     left_command = *comm;
   }
   else if(index==3) {
-    right_command = *comm;
-  }
-  else if(index==4) {
     back_command = *comm;
   }
-  // else if(index==5) {
-  //   aim_command = comm;
-  // }
+  else if(index==4) {
+    jump_command = *comm;
+  }
+  else if(index==5) {
+    aim_command = *comm;
+  }
   else if(index==6) {
     reload_command = *comm;
   }

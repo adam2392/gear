@@ -19,6 +19,15 @@ public:
 	void signalReload();
 	void signalCrouch();
 
+	void printFront();
+	void printRight();
+	void printLeft();
+	void printBack();
+	void printReload();
+	void printCrouch();
+	void printAim();
+	void printJump();
+
 	void pressCommand(char *comm);
 	void readSerial(char *outCommands);
 
@@ -29,15 +38,6 @@ public:
 	void setCommands(int index, char* comm);
 
 	private:
-		// enum { BUFFSZ = 100 };
-		// const char UP_ARROW[sizeof("up_arrow")] = "up_arrow";
-		// const char DOWN_ARROW[sizeof("down_arrow")] = "down_arrow";
-		// const char RIGHT_ARROW[sizeof("right_arrow")] = "right_arrow";
-		// const char LEFT_ARROW[sizeof("left_arrow")] = "left_arrow";
-		// const char SPACE[sizeof("space")] = "space";
-		// const char SHIFT[sizeof("shift")] = "shift";
-		// const char RIGHT_MOUSE[sizeof("right_mouse")] = "right_mouse";
-
 		const char SPACE = '1';
 		const char UP_ARROW = '2';
 		const char DOWN_ARROW = '3';
