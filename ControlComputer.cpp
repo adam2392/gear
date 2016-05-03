@@ -52,7 +52,8 @@ void ControlComputer::printJump() {
 
 void ControlComputer::signalFront() {
 //  Keyboard.press('w');
-  pressCommand(&front_command);
+  // pressCommand(&front_command);
+  Serial.println(front_command);
   // Serial.println('This is the front command: ');
   // Serial.println("w");
   // Serial.println("new command down");
@@ -60,23 +61,24 @@ void ControlComputer::signalFront() {
 }
 void ControlComputer::signalRight() {
 //  Keyboard.press('d');
-  pressCommand(&right_command);
-  // Serial.println("d");
+  // pressCommand(&right_command);
+  Serial.println(right_command);
 }
 void ControlComputer::signalLeft() {
 //  Keyboard.press('a');
-  pressCommand(&left_command);
-  // Serial.println("a");
+  // pressCommand(&left_command);
+  Serial.println(left_command);
 }
 void ControlComputer::signalBack() {
 //  Keyboard.press('s');
-  pressCommand(&back_command);
-  // Serial.println("s");
+  // pressCommand(&back_command);
+  Serial.println(back_command);
 }
 void ControlComputer::signalJump() {
 //  Keyboard.press(' ');
-  pressCommand(&jump_command);
-  // Serial.println(" ");
+  // pressCommand(&jump_command);
+  // Serial.println("pressing space...");
+  Serial.println(jump_command);
 }
 void ControlComputer::signalAim() {
 //  Mouse.press(MOUSE_RIGHT);
@@ -84,13 +86,13 @@ void ControlComputer::signalAim() {
 }
 void ControlComputer::signalReload() {
 //  Keyboard.press('r');
-  pressCommand(&reload_command);
-  // Serial.println("r");
+  // pressCommand(&reload_command);
+  Serial.println(reload_command);
 }
 void ControlComputer::signalCrouch() {
 //  Keyboard.press('g');
-  pressCommand(&crouch_command);
-  // Serial.println("g");
+  // pressCommand(&crouch_command);
+  Serial.println(crouch_command);
 }
 
 void ControlComputer::pressCommand(char *comm) {

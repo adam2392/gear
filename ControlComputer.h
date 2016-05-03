@@ -51,9 +51,18 @@ public:
 		char right_command = 'd';
 		char left_command = 'a';
 		char back_command = 's';
-		char jump_command = '1';
+		char jump_command = ' ';
 		char aim_command = 'aiming not set';
 		char reload_command = 'r';
 		char crouch_command = 'g';
+
+		// char front_command;
+		// char right_command;
+		// char left_command;
+		// char back_command;
+		// char jump_command;
+		// char aim_command;
+		// char reload_command;
+		// char crouch_command;
 };
 #endif

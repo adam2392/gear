@@ -8,8 +8,8 @@
 
 //define 4 force sensor pin outs
 //left shoe sensors
-#define SENSORLEFT_1 0
-#define SENSORLEFT_2 6
+#define SENSORLEFT_1 6
+#define SENSORLEFT_2 0
 #define SENSORLEFT_3 7
 
 //right shoe sensors
@@ -47,13 +47,13 @@ int threshLeft_L_H, threshLeft_L_L, threshHeel_L_H, threshHeel_L_L;
 void player1() {
   // RIGHT FOOT
   threshForward_R_H = 800;
-  threshForward_R_L = 200/1; // go forward w
+  threshForward_R_L = 200/5.5; // go forward w
   
   threshRight_R_H = 500;
-  threshRight_R_L = 500/4.5; // go right d
+  threshRight_R_L = 500/5; // go right d
   
   threshLeft_R_H = 500;
-  threshLeft_R_L = 600.0/4.5; // go left a
+  threshLeft_R_L = 600.0/6; // go left a
   
   threshHeel_R_H = 500;
   threshHeel_R_L = 400/4; //go back s
@@ -72,25 +72,30 @@ void player1() {
   threshHeel_L_L = 100/1.3;
 }
 /////////////////////END OF Setting Player Thresholds//////////////////////////
-
-int sleeptime = 1.0;
-
+// functions to wait for certain command releases
 void waitForDualCommandRelease(bool (*f)(), bool (*g)()){
     while(f() && g()) {
       sensor_comm.readSensors();
       delay(50);
     }
-    delay(10);
+    delay(20);
+}
+
+void waitForOrDualCommandRelease(bool (*f)(), bool (*g)()){
+    while(f() || g()) {
+      sensor_comm.readSensors();
+      delay(50);
+    }
+    delay(20);
 }
 
 void waitForCommandRelease( bool (*f)() ){
-    Serial.println("single");
     while(f()) {
       sensor_comm.readSensors();
       delay(50);
     }
-    Serial.println("z");
-    delay(10);
+//    Serial.println("z");
+    delay(20);
 }
 
 void setup() {
@@ -210,84 +215,175 @@ void loop() {
   //forward
   if(isForward()) {
     control_com.signalFront(); 
-    
-    while(isForward()) {
-      sensor_comm.readSensors();
-      delay(50);
-    }
+//    Serial.println("Going forward outside while.");
+    while(isLeft() || isRight()) {
+//      while(isLeft() || isRight()) {
+        sensor_comm.readSensors();
+        if(!isLeft() && isRight()) {
+          delay(30);
+          Serial.println("x");
+          delay(50);
+          control_com.signalRight();
+          waitForCommandRelease(isRight);
+        }
+        else if(!isRight() && isLeft()) {
+          delay(30);
+          Serial.println("x");
+          delay(50);
+          control_com.signalLeft();
+          waitForCommandRelease(isLeft);
+        }
+        else if(isReload()) {
+          delay(30);
+          Serial.println("x");
+          delay(50);
+          control_com.signalReload();
+          Serial.println("z"); // release reload and forward
+          delay(20);
+          control_com.signalFront(); //go forward again
+        }
+        else if(isCrouch()) { // crouch and forward
+          delay(30);
+          Serial.println("x");
+          delay(50);
+          control_com.signalCrouch();
+          waitForCommandRelease(isCrouch);
+          Serial.println("z"); // release
+          control_com.signalFront();
+        }
+        else if(isJump()) {  // jump and forward
+          delay(30);
+          Serial.println("x");
+          delay(50);
+          control_com.signalJump();
+          waitForCommandRelease(isJump);
+          Serial.println("z"); // release
+          control_com.signalFront();
+        }
+        delay(50);
+      }
+//    }
     Serial.println("z");
-//    Serial.flush();
     delay(10);
   }
   //right
-  else if(isRight() && !isLeft()) {
+  else if(isRight() && !isLeft()) { // GOING RIGHT
     control_com.signalRight(); 
     while(isRight() && !isLeft()) {
       sensor_comm.readSensors();
+      if(isReload()) {
+        delay(30);
+        Serial.println("x");
+        delay(50);
+        control_com.signalReload();
+        Serial.println("z"); // release reload and right
+        delay(20);
+        control_com.signalRight(); //go right again
+      }
+      else if(isCrouch()) { // crouch and right
+        delay(30);
+        Serial.println("x");
+        delay(50);
+        control_com.signalCrouch();
+        waitForCommandRelease(isCrouch);
+        control_com.signalRight();
+      }
+      else if(isJump()) {  // jump and right
+        delay(30);
+        Serial.println("x");
+        delay(50);
+        control_com.signalJump();
+        waitForCommandRelease(isJump);
+        control_com.signalRight();
+      }
       delay(50);
     }
     Serial.println("z");
-//    Serial.flush();
     delay(10);
   }
   //left
-  else if(isLeft() && !isRight()) {
+  else if(isLeft() && !isRight()) { // GOING LEFT
     control_com.signalLeft(); 
     while(isLeft() && !isRight()) {
       sensor_comm.readSensors();
+      if(isReload()) {
+        delay(30);
+        Serial.println("x");
+        delay(50);
+        control_com.signalReload();
+        Serial.println("z"); // release reload and left
+        delay(20);
+        control_com.signalLeft(); //go left again
+      }
+      else if(isCrouch()) { // crouch and left
+        delay(30);
+        Serial.println("x");
+        delay(50);
+        control_com.signalCrouch();
+        waitForCommandRelease(isCrouch);
+        control_com.signalLeft();
+      }
+      else if(isJump()) {  // jump and left
+        delay(30);
+        Serial.println("x");
+        delay(50);
+        control_com.signalJump();
+        waitForCommandRelease(isJump);
+        control_com.signalLeft();
+      }
       delay(50); 
     }
     Serial.println("z");
-//    Serial.flush();
     delay(10);
   }
-  else if(isBack()) {
+  else if(isBack()) {  // GOING BACK
     control_com.signalBack(); 
     while(isBack()) {
       sensor_comm.readSensors();
       delay(50);
     }
     Serial.println("z");
-//    Serial.flush();
     delay(10);
   }
   
-  else if(isReload()) {
+  else if(isReload()) { // RELOADING
     control_com.signalReload(); 
     while(isReload()) {
       sensor_comm.readSensors();
       delay(10);
     }
     Serial.println("z");
-//    Serial.flush();
-    sleep();
     delay(10);
   }
   
-  if (isCrouch()) {
+  if (isCrouch()) { // CROUCHING
     control_com.signalCrouch(); // send command for crouch
 
     while(isCrouch()) {
       sensor_comm.readSensors();
       if(isForward()) {
+        delay(30);
         Serial.println("x");
         delay(50);
         control_com.signalFront();
         waitForDualCommandRelease(isCrouch, isForward);
       }
       else if(isRight()) {
+        delay(30);
         Serial.println("x");
         delay(50);
         control_com.signalRight();
         waitForDualCommandRelease(isCrouch, isRight);
       }
       else if(isLeft()) {
+        delay(30);
         Serial.println("x");
         delay(50);
         control_com.signalLeft();
         waitForDualCommandRelease(isCrouch, isLeft);
       }
       else if(isBack()) {
+        delay(30);
         Serial.println("x");
         delay(50);
         control_com.signalBack();
@@ -299,8 +395,7 @@ void loop() {
     delay(10);
   }
   
-  
-  if(isJump()) {
+  if(isJump()) { // JUMPING
     control_com.signalJump(); 
     while(isJump()) {
       sensor_comm.readSensors();
